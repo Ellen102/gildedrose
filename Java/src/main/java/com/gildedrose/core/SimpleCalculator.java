@@ -1,9 +1,26 @@
 package com.gildedrose.core;
 
+import com.gildedrose.core.predicate.IsExactlyPredicate;
+import com.gildedrose.core.predicate.StockItemPredicate;
+
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import static com.gildedrose.GildedRoseConstants.*;
-import static com.gildedrose.GildedRoseConstants.SULFURAS;
 
 public class SimpleCalculator implements Calculator {
+
+    private final Stream<Rule> orderedRules;
+
+    public SimpleCalculator() {
+        orderedRules = Stream.of(
+            rule(SULFURAS, SimpleCalculator::calculateSulfurasQuality),
+            rule(AGED_BRIE, SimpleCalculator::calculateSulfurasQuality),
+            rule(BACKSTAGE_PASSES, SimpleCalculator::calculateSulfurasQuality),
+            always(SimpleCalculator::calculateSulfurasQuality)
+        );
+    }
+
     @Override
     public StockItem calculateNext(StockItem stockItem) {
         return stockItem.copy(
@@ -12,42 +29,68 @@ public class SimpleCalculator implements Calculator {
         );
     }
 
+    record Rule(StockItemPredicate predicate, Function<StockItem, Integer> calculate) {
+    }
+
+    private static Rule rule(String name, Function<StockItem, Integer> calculate) {
+        return new Rule(new IsExactlyPredicate(name), calculate);
+    }
+
+    private static Rule always(Function<StockItem, Integer> calculate) {
+        return new Rule(StockItemPredicate.ALWAYS_TRUE, calculate);
+    }
+
 
     private static int calculateNextQuality(StockItem item) {
         switch (item.name()) {
             case SULFURAS -> {
-                return item.quality();
+                return calculateSulfurasQuality(item);
             }
 
             case AGED_BRIE -> {
-                if (item.sellIn() > 0) {
-                    return increasedItemQualityWithMax50(item, 1);
-                } else {
-                    return increasedItemQualityWithMax50(item, 2);
-                }
-
+                return calculateAgedBrieQuality(item);
             }
 
             case BACKSTAGE_PASSES -> {
-                if (item.sellIn() >= 11) {
-                    return increasedItemQualityWithMax50(item, 1);
-                } else if (6 <= item.sellIn()) {
-                    return increasedItemQualityWithMax50(item, 2);
-                } else if (0 < item.sellIn()) {
-                    return increasedItemQualityWithMax50(item, 3);
-                } else {
-                    return 0;
-                }
+                return calculateBackstagePassesQuality(item);
             }
 
             default -> {
-                if (item.sellIn() > 0) {
-                    return decreasedItemQualityWithMin0(item, 1);
-                } else {
-                    return decreasedItemQualityWithMin0(item, 2);
-                }
+                return calculateDefaultQuality(item);
             }
         }
+    }
+
+    private static int calculateDefaultQuality(StockItem item) {
+        if (item.sellIn() > 0) {
+            return decreasedItemQualityWithMin0(item, 1);
+        } else {
+            return decreasedItemQualityWithMin0(item, 2);
+        }
+    }
+
+    private static int calculateBackstagePassesQuality(StockItem item) {
+        if (item.sellIn() >= 11) {
+            return increasedItemQualityWithMax50(item, 1);
+        } else if (6 <= item.sellIn()) {
+            return increasedItemQualityWithMax50(item, 2);
+        } else if (0 < item.sellIn()) {
+            return increasedItemQualityWithMax50(item, 3);
+        } else {
+            return 0;
+        }
+    }
+
+    private static int calculateAgedBrieQuality(StockItem item) {
+        if (item.sellIn() > 0) {
+            return increasedItemQualityWithMax50(item, 1);
+        } else {
+            return increasedItemQualityWithMax50(item, 2);
+        }
+    }
+
+    private static int calculateSulfurasQuality(StockItem item) {
+        return item.quality();
     }
 
     private static int decreasedItemQualityWithMin0(StockItem item, int decrement) {
