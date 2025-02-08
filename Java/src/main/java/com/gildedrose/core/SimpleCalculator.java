@@ -15,9 +15,9 @@ public class SimpleCalculator implements Calculator {
     public SimpleCalculator() {
         orderedRules = Stream.of(
             rule(SULFURAS, SimpleCalculator::calculateSulfurasQuality),
-            rule(AGED_BRIE, SimpleCalculator::calculateSulfurasQuality),
-            rule(BACKSTAGE_PASSES, SimpleCalculator::calculateSulfurasQuality),
-            always(SimpleCalculator::calculateSulfurasQuality)
+            rule(AGED_BRIE, SimpleCalculator::calculateAgedBrieQuality),
+            rule(BACKSTAGE_PASSES, SimpleCalculator::calculateBackstagePassesQuality),
+            always(SimpleCalculator::calculateDefaultQuality)
         );
     }
 
@@ -30,6 +30,12 @@ public class SimpleCalculator implements Calculator {
     }
 
     record Rule(StockItemPredicate predicate, Function<StockItem, Integer> calculate) {
+        boolean isApplicable(StockItem stockItem) {
+            return predicate.test(stockItem);
+        }
+        Integer calculateNextQuality(StockItem stockItem) {
+            return calculate.apply(stockItem);
+        }
     }
 
     private static Rule rule(String name, Function<StockItem, Integer> calculate) {
@@ -41,24 +47,12 @@ public class SimpleCalculator implements Calculator {
     }
 
 
-    private static int calculateNextQuality(StockItem item) {
-        switch (item.name()) {
-            case SULFURAS -> {
-                return calculateSulfurasQuality(item);
-            }
-
-            case AGED_BRIE -> {
-                return calculateAgedBrieQuality(item);
-            }
-
-            case BACKSTAGE_PASSES -> {
-                return calculateBackstagePassesQuality(item);
-            }
-
-            default -> {
-                return calculateDefaultQuality(item);
-            }
-        }
+    private int calculateNextQuality(StockItem item) {
+        return orderedRules
+            .filter(it -> it.isApplicable(item))
+            .findFirst()
+            .orElseThrow()
+            .calculateNextQuality(item);
     }
 
     private static int calculateDefaultQuality(StockItem item) {
