@@ -21,39 +21,32 @@ class GildedRose {
             case SULFURAS -> {
 
             }
+
             case AGED_BRIE -> {
-
-                increaseItemQualityWithMax50(item,1);
-
-                if (item.sellIn <= 0) {
-                    increaseItemQualityWithMax50(item,1);
+                if (item.sellIn > 0) {
+                    increaseItemQualityWithMax50(item, 1);
+                } else {
+                    increaseItemQualityWithMax50(item, 2);
                 }
             }
+
             case BACKSTAGE_PASSES -> {
-                if (item.quality < 50) {
-                    increaseItemQualityWithMax50(item,1);
-
-                    if (item.sellIn < 11) {
-                        increaseItemQualityWithMax50(item,1);
-                    }
-
-                    if (item.sellIn < 6) {
-                        increaseItemQualityWithMax50(item,1);
-                    }
-
-                }
-
-                if (item.sellIn <= 0) {
+                if (item.sellIn >= 11) {
+                    increaseItemQualityWithMax50(item, 1);
+                } else if (6 <= item.sellIn) {
+                    increaseItemQualityWithMax50(item, 2);
+                } else if (0 < item.sellIn) {
+                    increaseItemQualityWithMax50(item, 3);
+                } else {
                     item.quality = 0;
                 }
             }
-            default -> {
-                if (item.quality > 0) {
-                    decreaseItemQualityWithMin0(item,1);
 
-                }
-                if (item.sellIn <= 0) {
-                    decreaseItemQualityWithMin0(item,1);
+            default -> {
+                if (item.sellIn > 0) {
+                    decreaseItemQualityWithMin0(item, 1);
+                } else {
+                    decreaseItemQualityWithMin0(item, 2);
                 }
             }
         }
@@ -62,16 +55,17 @@ class GildedRose {
     }
 
     private static void decreaseItemQualityWithMin0(Item item, int decrement) {
-        if(item.quality < 0){
-            //keep same behavoir
-        }else {
+        if (item.quality < 0) {
+            //keep same behavior
+        } else {
             item.quality = Math.max(0, item.quality - decrement);
         }
     }
+
     private static void increaseItemQualityWithMax50(Item item, int increment) {
-        if(item.quality > 50){
-            //keep same behavoir
-        }else {
+        if (item.quality > 50) {
+            //keep same behavior
+        } else {
             item.quality = Math.min(50, item.quality + increment);
         }
     }

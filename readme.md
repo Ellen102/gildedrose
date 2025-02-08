@@ -62,6 +62,10 @@
   - it is implements as 0 or negative sell in -> +2 ; positive just +1
 - first analyse default flow (unamed products), then sulfuras, then brie, backage passes (in order of complexity)
   - only refactorusing intelij: invert ifs, split if -> makes it easier to understand + easier to understand coverage report :)
-  - 
+  - try to remove sellin update from the middle
+  - merge logic per producttype
+  - use min,max instead of if(..<max)increase, but we need to keep the same behavoir  with invalid params to not make goblin Mad
+  - merge sequantialy updates into 1
+  - always place it in positive sellin, negative order
       
 
