@@ -1,81 +1,59 @@
 package com.gildedrose;
 
-import static com.gildedrose.GildedRoseConstants.*;
+import com.gildedrose.core.Calculator;
+import com.gildedrose.core.SimpleCalculator;
+import com.gildedrose.core.StockItem;
+
+import java.util.Arrays;
+import java.util.List;
 
 class GildedRose {
     Item[] items;
+    private static final Calculator calculator = new SimpleCalculator();
 
     public GildedRose(Item[] items) {
         this.items = items;
     }
 
     public void updateQuality() {
-        for (Item item : items) {
-            item.quality = calculateNextQuality(item);
-            item.sellIn = calculateNextSellIn(item);
+        List<ItemToAntiCorruptionItem> deepCopyOfItems = Arrays.stream(items)
+            .map(ItemToAntiCorruptionItem::create)
+            .toList();
+
+        List<ItemToAntiCorruptionItem> finishedItemCalculation = deepCopyOfItems
+            .stream()
+            .map(AntiCorruptionActions::new)
+            .map(AntiCorruptionActions::calculateNext)
+            .toList();
+
+        finishedItemCalculation
+            .forEach(ItemToAntiCorruptionItem::applyChanges);
+
+    }
+
+    private record AntiCorruptionActions(ItemToAntiCorruptionItem item) {
+        public ItemToAntiCorruptionItem calculateNext() {
+            return item.withStockItem(calculator.calculateNext(item.stockItem));
         }
     }
 
-    private static int calculateNextQuality(Item item) {
-        switch (item.name) {
-            case SULFURAS -> {
-                return item.quality;
-            }
 
-            case AGED_BRIE -> {
-                if (item.sellIn > 0) {
-                    return increasedItemQualityWithMax50(item, 1);
-                } else {
-                    return increasedItemQualityWithMax50(item, 2);
-                }
+    private record ItemToAntiCorruptionItem(Item item, StockItem stockItem) {
 
-            }
-
-            case BACKSTAGE_PASSES -> {
-                if (item.sellIn >= 11) {
-                    return increasedItemQualityWithMax50(item, 1);
-                } else if (6 <= item.sellIn) {
-                    return increasedItemQualityWithMax50(item, 2);
-                } else if (0 < item.sellIn) {
-                    return increasedItemQualityWithMax50(item, 3);
-                } else {
-                    return 0;
-                }
-            }
-
-            default -> {
-                if (item.sellIn > 0) {
-                    return decreasedItemQualityWithMin0(item, 1);
-                } else {
-                    return decreasedItemQualityWithMin0(item, 2);
-                }
-            }
+        public static ItemToAntiCorruptionItem create(Item item) {
+            return new ItemToAntiCorruptionItem(item, new StockItem(item.name, item.sellIn, item.quality));
         }
+
+        public ItemToAntiCorruptionItem withStockItem(StockItem stockItem) {
+            return new ItemToAntiCorruptionItem(item, stockItem);
+        }
+
+        public void applyChanges() {
+            item.quality = stockItem.quality();
+            item.sellIn = stockItem.sellIn();
+        }
+
     }
 
-    private static int decreasedItemQualityWithMin0(Item item, int decrement) {
-        if (item.quality < 0) {
-            //keep same behavior
-            return item.quality;
-        } else {
-            return Math.max(0, item.quality - decrement);
-        }
-    }
 
-    private static int increasedItemQualityWithMax50(Item item, int increment) {
-        if (item.quality > 50) {
-            //keep same behavior
-            return item.quality;
-        } else {
-            return Math.min(50, item.quality + increment);
-        }
-    }
-
-    private static int calculateNextSellIn(Item item) {
-        if (SULFURAS.equals(item.name)) {
-            return item.sellIn;
-        } else {
-            return item.sellIn - 1;
-        }
-    }
 }

@@ -9,7 +9,7 @@
 - [x] ./gradlew test passes
 - [x] Intelij can run with test coverage
 
-## Step 1: understanding, analysing, testing and simple refactoring existing code
+##  understanding, analysing, testing and simple refactoring existing code
 goal: make it easy to read
 
 ### Tests
@@ -71,4 +71,20 @@ goal: make it easy to read
   - always place it in positive sellin, negative order
   - return instead of update
       
+
+##  Overthinking...
+
+## step 1: Deep copy of items
+The items list can be changed externally by the creator of the list. 
+Ideally we would take an argument to the '"update"quality" method, and return a new result
+As this is not possible we can introduce an anticorruption layer
+
+
+### Step 2: The weird behavoir for negative quality and to high qualities
+
+
+
+- do not modify values inside 
+- use immutability
+- handle anticorruption behavoir
 
