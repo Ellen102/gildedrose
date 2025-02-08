@@ -1,0 +1,39 @@
+package com.gildedrose.helpers;
+
+import com.gildedrose.Item;
+
+public class ItemBuilder {
+    private String name;
+    private int sellIn;
+    private int quality;
+
+
+    public static ItemBuilder anItem(){
+        return new ItemBuilder("foo",1,1);
+    }
+
+    public ItemBuilder withName(String name){
+        this.name = name;
+        return this;
+    }
+
+    public ItemBuilder withSellIn(int sellIn){
+        this.sellIn = sellIn;
+        return this;
+    }
+
+    public ItemBuilder withQuality(int quality){
+        this.quality = quality;
+        return this;
+    }
+
+    ItemBuilder(String name, int sellIn, int quality) {
+        this.name = name;
+        this.sellIn = sellIn;
+        this.quality = quality;
+    }
+
+    public Item build() {
+        return new Item(name, sellIn, quality);
+    }
+}
