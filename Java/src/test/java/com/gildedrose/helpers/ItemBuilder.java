@@ -1,6 +1,9 @@
 package com.gildedrose.helpers;
 
 import com.gildedrose.Item;
+import com.gildedrose.GildedRoseConstants;
+
+import static com.gildedrose.GildedRoseConstants.*;
 
 public class ItemBuilder {
     private String name;
@@ -10,6 +13,9 @@ public class ItemBuilder {
 
     public static ItemBuilder anItem(){
         return new ItemBuilder("foo",1,1);
+    }
+    public static ItemBuilder anSulfurasItem(){
+        return new ItemBuilder(SULFURAS,-1, SULFURAS_QUALITY);
     }
 
     public ItemBuilder withName(String name){
