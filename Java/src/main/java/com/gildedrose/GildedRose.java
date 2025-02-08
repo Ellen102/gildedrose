@@ -11,11 +11,12 @@ class GildedRose {
 
     public void updateQuality() {
         for (Item item : items) {
-            updateQualityAndSellIn(item);
+            updateQuality(item);
+            updateSellIn(item);
         }
     }
 
-    private static void updateQualityAndSellIn(Item item) {
+    private static void updateQuality(Item item) {
         if (item.name.equals(AGED_BRIE)) {
             if (item.quality < 50) {
                 item.quality = item.quality + 1;
@@ -47,9 +48,7 @@ class GildedRose {
             }
         }
 
-        updateSellIn(item);
-
-        if (item.sellIn < 0) {
+        if (item.sellIn <= 0) {
             if (item.name.equals(AGED_BRIE)) {
                 if (item.quality < 50) {
                     item.quality = item.quality + 1;
@@ -66,6 +65,10 @@ class GildedRose {
                 }
             }
         }
+
+
+
+
     }
 
     private static void updateSellIn(Item item) {
