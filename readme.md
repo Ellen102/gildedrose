@@ -10,6 +10,8 @@
 - [x] Intelij can run with test coverage
 
 ## Step 1: understanding, analysing, testing and simple refactoring existing code
+goal: make it easy to read
+
 ### Tests
 - using builders
   - easier to change
@@ -67,5 +69,6 @@
   - use min,max instead of if(..<max)increase, but we need to keep the same behavoir  with invalid params to not make goblin Mad
   - merge sequantialy updates into 1
   - always place it in positive sellin, negative order
+  - return instead of update
       
 
