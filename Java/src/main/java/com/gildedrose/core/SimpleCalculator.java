@@ -10,11 +10,11 @@ import static com.gildedrose.core.rule.Rule.rule;
 
 public class SimpleCalculator implements Calculator {
 
-    private final OrderedRuleEngine<Integer> qualityCalculationRuleEngine;
+    private final OrderedRuleEngine qualityCalculationRuleEngine;
 
     public SimpleCalculator() {
         //this can be moved to separate calculators and tested indivudally. but i want to wriste a dsl :p
-        qualityCalculationRuleEngine = new OrderedRuleEngine<>(
+        qualityCalculationRuleEngine = new OrderedRuleEngine(
             List.of(
                 rule(SULFURAS, SimpleCalculator::calculateSulfurasNextQuality),
                 rule(AGED_BRIE, SimpleCalculator::calculateAgedBrieNextQuality),
@@ -34,8 +34,8 @@ public class SimpleCalculator implements Calculator {
 
 
     private int calculateNextQuality(StockItem item) {
-        return qualityCalculationRuleEngine.retrieveFirstMatchingRule(item.asStockName())
-            .apply(item.asStockProperties());
+        return qualityCalculationRuleEngine.retrieveFirstMatchingRule(item.stockName())
+            .apply(item.stockProperties());
     }
 
     private static int calculateDefaultNextQuality(StockProperties item) {

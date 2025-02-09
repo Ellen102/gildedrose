@@ -15,8 +15,8 @@ public class ValidatingCalculator implements Calculator {
     private static final Validator validator = new AllValidator(
         List.of(
             validate("Quality should be 0 or higher", item -> item.quality() < 0),
-            validate("Quality should be " + SULFURAS_QUALITY, item -> IS_EXACTLY_SULFURAS.test(item.asStockName()) && item.quality() != SULFURAS_QUALITY),
-            validate("Quality should be less than " + MAX_QUALITY, item -> IS_EXACTLY_SULFURAS.negate().test(item.asStockName()) && item.quality() > MAX_QUALITY)
+            validate("Quality should be " + SULFURAS_QUALITY, item -> IS_EXACTLY_SULFURAS.test(item.stockName()) && item.quality() != SULFURAS_QUALITY),
+            validate("Quality should be less than " + MAX_QUALITY, item -> IS_EXACTLY_SULFURAS.negate().test(item.stockName()) && item.quality() > MAX_QUALITY)
         )
     );
 

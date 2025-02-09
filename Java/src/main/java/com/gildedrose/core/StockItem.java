@@ -28,11 +28,11 @@ public record StockItem(
         };
     }
 
-    public StockProperties asStockProperties() {
+    public StockProperties stockProperties() {
         return new StockProperties(sellInType, quality);
     }
 
-    public StockName asStockName() {
+    public StockName stockName() {
         return new StockName(name);
     }
 }
