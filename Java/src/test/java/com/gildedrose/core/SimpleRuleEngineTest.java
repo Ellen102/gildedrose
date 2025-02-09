@@ -19,7 +19,7 @@ class SimpleRuleEngineTest {
     void givenSulfuras_whenRetrieveFirstMatchingRule_thenItHasFixedAmountQualityCalculator() {
         StockName stockName = StockName.of(SULFURAS);
 
-        QualityCalculator calculator = simpleRuleEngine.retrieveFirstMatchingRule(stockName).calculator();
+        QualityCalculator calculator = simpleRuleEngine.retrieveRuleFor(stockName).calculator();
 
         assertThat(calculator).isExactlyInstanceOf(FixedAmountQualityCalculator.class);
     }
@@ -28,7 +28,7 @@ class SimpleRuleEngineTest {
     void givenAgedBrie_whenRetrieveFirstMatchingRule_thenItHasIncreaseFasterAfterSellInQualityCalculator() {
         StockName stockName = StockName.of(AGED_BRIE);
 
-        QualityCalculator calculator = simpleRuleEngine.retrieveFirstMatchingRule(stockName).calculator();
+        QualityCalculator calculator = simpleRuleEngine.retrieveRuleFor(stockName).calculator();
 
         assertThat(calculator).isExactlyInstanceOf(IncreaseFasterAfterSellInQualityCalculator.class);
     }
@@ -37,7 +37,7 @@ class SimpleRuleEngineTest {
     void givenBackstagePasses_whenRetrieveFirstMatchingRule_thenItHasBackstagePassRangedQualityCalculator() {
         StockName stockName = StockName.of(BACKSTAGE_PASSES);
 
-        QualityCalculator calculator = simpleRuleEngine.retrieveFirstMatchingRule(stockName).calculator();
+        QualityCalculator calculator = simpleRuleEngine.retrieveRuleFor(stockName).calculator();
 
         assertThat(calculator).isExactlyInstanceOf(BackstagePassRangedQualityCalculator.class);
     }
@@ -47,7 +47,7 @@ class SimpleRuleEngineTest {
     void givenAnotherName_whenRetrieveFirstMatchingRule_thenItHasDecreaseFasterAfterSellInQualityCalculator(String name) {
         StockName stockName = StockName.of(name);
 
-        QualityCalculator calculator = simpleRuleEngine.retrieveFirstMatchingRule(stockName).calculator();
+        QualityCalculator calculator = simpleRuleEngine.retrieveRuleFor(stockName).calculator();
 
         assertThat(calculator).isExactlyInstanceOf(DecreaseFasterAfterSellInQualityCalculator.class);
     }

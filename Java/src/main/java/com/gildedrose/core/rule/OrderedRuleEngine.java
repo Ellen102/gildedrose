@@ -15,10 +15,10 @@ public class OrderedRuleEngine{
         this.orderedRules = Collections.unmodifiableList(orderedRules);
     }
 
-    public Rule retrieveFirstMatchingRule(StockName stockName) {
+    public Rule retrieveRuleFor(StockName stockName) {
         return orderedRules.stream()
             .filter(it -> it.predicate().test(stockName))
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("No rule found for " + stockName));
+            .orElseThrow(() -> new IllegalStateException("No rule found for `%s`".formatted( stockName.value())));
     }
 }

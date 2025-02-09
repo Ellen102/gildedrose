@@ -4,23 +4,19 @@ import com.gildedrose.core.rule.OrderedRuleEngine;
 
 public class RuleEngineCalculator implements Calculator {
 
-    private final OrderedRuleEngine qualityCalculationRuleEngine;
+    private final OrderedRuleEngine qualityCalculationRules;
 
     public RuleEngineCalculator(OrderedRuleEngine qualityCalculationRuleEngine) {
-        this.qualityCalculationRuleEngine = qualityCalculationRuleEngine;
+        this.qualityCalculationRules = qualityCalculationRuleEngine;
     }
 
     @Override
     public StockItem calculateNext(StockItem stockItem) {
         return stockItem.copy(
             stockItem.sellInType().next(),
-            calculateNextQuality(stockItem)
+            qualityCalculationRules.retrieveRuleFor(stockItem.stockName())
+                .apply(stockItem.stockProperties())
         );
-    }
-
-    private int calculateNextQuality(StockItem item) {
-        return qualityCalculationRuleEngine.retrieveFirstMatchingRule(item.stockName())
-            .apply(item.stockProperties());
     }
 
 }
