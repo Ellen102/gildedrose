@@ -1,9 +1,6 @@
 package com.gildedrose;
 
-import com.gildedrose.core.Calculator;
-import com.gildedrose.core.DslCalculator;
-import com.gildedrose.core.SimpleCalculator;
-import com.gildedrose.core.ValidatingCalculator;
+import com.gildedrose.core.*;
 
 public record FeatureFlags(
     CalculationStrategy calculationStrategy
@@ -25,8 +22,8 @@ public record FeatureFlags(
 
     public Calculator calculator() {
         return switch (calculationStrategy) {
-            case ORIGINAL_BEHAVIOUR -> new ValidatingCalculator(new SimpleCalculator(), false);
-            case FAIL_ON_EXCEPTIONS_BEHAVIOUR -> new ValidatingCalculator(new DslCalculator(), true);
+            case ORIGINAL_BEHAVIOUR -> new ValidatingCalculator(new RuleEngineCalculator(new SimpleRuleEngine()), false);
+            case FAIL_ON_EXCEPTIONS_BEHAVIOUR -> new ValidatingCalculator(new RuleEngineCalculator(new DslRuleEngine()), true);
         };
     }
 }

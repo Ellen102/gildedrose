@@ -3,9 +3,7 @@ package com.gildedrose.core.dsl;
 import com.gildedrose.GildedRoseConstants;
 import com.gildedrose.core.QualityCalculator;
 import com.gildedrose.core.predicate.StockNamePredicate;
-import com.gildedrose.core.rule.OrderedRuleEngine;
 import com.gildedrose.core.rule.Rule;
-import com.gildedrose.core.rule.RuleEngine;
 
 import java.util.List;
 
@@ -15,9 +13,6 @@ public class QualityCalculationDsl {
     }
 
     // Rule creation
-    public static RuleEngine orderedRules(Rule... rules) {
-        return new OrderedRuleEngine(List.of(rules));
-    }
 
     public record RuleToCalculate(StockNamePredicate predicate) {
         public Rule calculateQualityAs(QualityCalculator calculator) {

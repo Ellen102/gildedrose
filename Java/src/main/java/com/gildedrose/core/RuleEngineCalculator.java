@@ -2,12 +2,12 @@ package com.gildedrose.core;
 
 import com.gildedrose.core.rule.OrderedRuleEngine;
 
-public class SimpleCalculator implements Calculator {
+public class RuleEngineCalculator implements Calculator {
 
     private final OrderedRuleEngine qualityCalculationRuleEngine;
 
-    public SimpleCalculator() {
-        qualityCalculationRuleEngine = new SimpleRuleEngine();
+    public RuleEngineCalculator(OrderedRuleEngine qualityCalculationRuleEngine) {
+        this.qualityCalculationRuleEngine = qualityCalculationRuleEngine;
     }
 
     @Override

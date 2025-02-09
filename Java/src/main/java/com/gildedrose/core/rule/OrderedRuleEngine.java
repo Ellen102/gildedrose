@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class OrderedRuleEngine implements RuleEngine {
+public class OrderedRuleEngine{
 
     protected final Collection<Rule> orderedRules;
 
@@ -15,7 +15,6 @@ public class OrderedRuleEngine implements RuleEngine {
         this.orderedRules = Collections.unmodifiableList(orderedRules);
     }
 
-    @Override
     public Rule retrieveFirstMatchingRule(StockName stockName) {
         return orderedRules.stream()
             .filter(it -> it.predicate().test(stockName))
