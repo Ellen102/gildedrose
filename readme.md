@@ -97,6 +97,9 @@ these odd behaviors, and we should verify that no one is exploiting them before 
 - Utilize **predicates** to allow for future naming changes.
 - Create a **specific rule engine** to manage item rules.
 - Prefer **immutability** wherever possible.
+- Name of calculator classes
+  - As the calculator is not really specific anymore for the item name, they should explain what they are doing, this is very long though
+  - (TODO: improve names)
 
 ### Steps to Add a Conjured Item After Refactoring
 
@@ -146,3 +149,5 @@ Predicate for 'Backstage passes' can be changed to something like `ContainsInLow
 I just wanted to write a dsl because they are fun to write and easy to read. This way our intern can easily configure
 new items.
 (dsl is not tested, still in design phase)
+
+-> should consider a more e2e testing framework
