@@ -102,7 +102,7 @@ these odd behaviors, and we should verify that no one is exploiting them before 
   - (TODO: improve names)
 
 ### Steps to Add a Conjured Item After Refactoring
-
+- Ideally we would like more explenation or decent examples of what `twice as fast` means
 - Add a **Quality Calculator** & test it.
 - Add a rule to the **rule engine**.
 - Check if the rule is **returned by the engine**.
