@@ -1,58 +1,70 @@
 package com.gildedrose;
 
 import com.gildedrose.core.Calculator;
-import com.gildedrose.core.SimpleCalculator;
 import com.gildedrose.core.StockItem;
+import com.gildedrose.core.valueobjects.SellInType;
 
 import java.util.Arrays;
 import java.util.List;
 
+
 class GildedRose {
     Item[] items;
-    private static final Calculator calculator = new SimpleCalculator();
+
+    private static final Calculator calculator = GildedRoseConstants.FEATURE_FLAGS.calculator();
 
     public GildedRose(Item[] items) {
         this.items = items;
     }
 
     public void updateQuality() {
-        List<ItemToAntiCorruptionItem> deepCopyOfItems = Arrays.stream(items)
-            .map(ItemToAntiCorruptionItem::create)
+        List<AntiCorruptionItem> deepCopyOfItems = Arrays.stream(items)
+            .map(AntiCorruptionItem::create)
             .toList();
 
-        List<ItemToAntiCorruptionItem> finishedItemCalculation = deepCopyOfItems
+        List<AntiCorruptionItem> finishedItemCalculation = deepCopyOfItems
             .stream()
-            .map(AntiCorruptionActions::new)
-            .map(AntiCorruptionActions::calculateNext)
+            .map(AntiCorruptionItem::calculateNext)
             .toList();
 
         finishedItemCalculation
-            .forEach(ItemToAntiCorruptionItem::applyChanges);
+            .forEach(AntiCorruptionItem::applyChanges);
 
     }
 
-    private record AntiCorruptionActions(ItemToAntiCorruptionItem item) {
-        public ItemToAntiCorruptionItem calculateNext() {
-            return item.withStockItem(calculator.calculateNext(item.stockItem));
-        }
-    }
 
+    private record AntiCorruptionItem(Item item, StockItem stockItem) {
 
-    private record ItemToAntiCorruptionItem(Item item, StockItem stockItem) {
-
-        public static ItemToAntiCorruptionItem create(Item item) {
-            return new ItemToAntiCorruptionItem(item, new StockItem(item.name, item.sellIn, item.quality));
+        public static AntiCorruptionItem create(Item item) {
+            StockItem antiCorruptionItem = new StockItem(item.name, determineSellInType(item), item.quality);
+            return new AntiCorruptionItem(item, antiCorruptionItem);
         }
 
-        public ItemToAntiCorruptionItem withStockItem(StockItem stockItem) {
-            return new ItemToAntiCorruptionItem(item, stockItem);
+        public AntiCorruptionItem with(StockItem stockItem) {
+            return new AntiCorruptionItem(item, stockItem);
         }
 
         public void applyChanges() {
             item.quality = stockItem.quality();
-            item.sellIn = stockItem.sellIn();
+            item.sellIn = switch (stockItem.sellInType()) {
+                case SellInType.DailyDecreasingSellIn dailyDecreasingSellIn -> dailyDecreasingSellIn.value();
+                case SellInType.StableSellIn stableSellIn -> item.sellIn;
+            };
         }
 
+        public AntiCorruptionItem calculateNext() {
+            return with(calculator.calculateNext(stockItem));
+        }
+    }
+
+    private static SellInType determineSellInType(Item item) {
+        final SellInType sellIn;
+        if (item.name.equals(GildedRoseConstants.SULFURAS)) {
+            sellIn = SellInType.STABLE;
+        } else {
+            sellIn = SellInType.dailyDecreasing(item.sellIn);
+        }
+        return sellIn;
     }
 
 

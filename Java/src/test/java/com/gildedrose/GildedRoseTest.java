@@ -2,16 +2,19 @@ package com.gildedrose;
 
 import com.gildedrose.helpers.ItemBuilder;
 import com.gildedrose.helpers.ItemListBuilder;
+import com.gildedrose.testextensions.SkipWhenStrategyIsDifferentFrom;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.gildedrose.FeatureFlags.ORIGINAL_BEHAVIOUR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GildedRoseTest {
+
 
     private static void updateQuality(Item[] items) {
         //Items are updated inplace
@@ -21,6 +24,12 @@ class GildedRoseTest {
     private static void updateQuality(Item item) {
         var items = new Item[]{item};
         new GildedRose(items).updateQuality();
+    }
+
+    @Test
+    @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
+    public void originalBehaviourIsSet() {
+        assertThat(GildedRoseConstants.FEATURE_FLAGS.calculationStrategy()).isEqualTo(ORIGINAL_BEHAVIOUR);
     }
 
     @Nested
@@ -42,7 +51,7 @@ class GildedRoseTest {
                 .withItem("foo")
                 .withItem(GildedRoseConstants.BACKSTAGE_PASSES)
                 .withItem(GildedRoseConstants.AGED_BRIE)
-                .withItem(GildedRoseConstants.SULFURAS)
+                .withItemBuilder(ItemBuilder.anSulfurasItem())
                 .withItem("Rainbow powder")
                 .build();
 
@@ -193,6 +202,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithQuality51_whenUpdateQuality_thenQualityIs50() {
                     var item = ItemBuilder.anItem()
                         .withQuality(51)
@@ -205,6 +215,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithNegativeQuality_whenUpdateQuality_thenQualityRemainsTheSame() {
                     int negativeQuality = -1;
                     var item = ItemBuilder.anItem()
@@ -274,6 +285,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithQuality51_whenUpdateQuality_thenQualityDecreasesBy2() {
                     var item = ItemBuilder.anItem()
                         .withQuality(51)
@@ -286,6 +298,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithNegativeQuality_whenUpdateQuality_thenQualityRemainsTheSame() {
                     int negativeQuality = -1;
                     var item = ItemBuilder.anItem()
@@ -366,6 +379,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithQuality51_whenUpdateQuality_thenQualityIs49() {
                     var item = ItemBuilder.anItem()
                         .withQuality(51)
@@ -378,6 +392,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithQuality52_whenUpdateQuality_thenQualityIs50() {
                     var item = ItemBuilder.anItem()
                         .withQuality(52)
@@ -390,6 +405,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenAnItemWithNegativeQuality_whenUpdateQuality_thenQualityRemainsTheSame() {
                     int negativeQuality = -1;
                     var item = ItemBuilder.anItem()
@@ -425,6 +441,7 @@ class GildedRoseTest {
 
             @ParameterizedTest
             @ValueSource(ints = {-1, 0, 1})
+            @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
             void givenSulfurasWithQuality14AndAnySellIn_whenUpdateQuality_thenQualityRemains14(int sellIn) {
                 int invalidQuality = 14;
                 var item = ItemBuilder.anItem()
@@ -440,6 +457,7 @@ class GildedRoseTest {
 
             @ParameterizedTest
             @ValueSource(ints = {-1, 0, 1})
+            @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
             void givenSulfurasWithQuality0AndAnySellIn_whenUpdateQuality_thenQualityRemains0(int sellIn) {
                 int zeroQuality = 0;
                 var item = ItemBuilder.anItem()
@@ -455,6 +473,7 @@ class GildedRoseTest {
 
             @ParameterizedTest
             @ValueSource(ints = {-1, 0, 1})
+            @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
             void givenSulfurasWithQualityNegativeAndAnySellIn_whenUpdateQuality_thenQualityRemains0(int sellIn) {
                 int negativeQuality = -5;
                 var item = ItemBuilder.anItem()
@@ -479,6 +498,7 @@ class GildedRoseTest {
                 int positiveSellIn = 5;
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBrieWithQualityNegativeAndPositiveSellIn_whenUpdateQuality_thenQualityIncreasesBy1() {
                     int quality = -5;
                     var item = ItemBuilder.anItem()
@@ -519,6 +539,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBrieWithQuality55AndSellInPositive_whenUpdateQuality_thenQualityRemains55() {
                     var item = ItemBuilder.anItem()
                         .withName(GildedRoseConstants.AGED_BRIE)
@@ -578,6 +599,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBrieWithQualityNegativeAndSellIn0_whenUpdateQuality_thenQualityIncreasesBy2() {
                     int quality = -5;
                     var item = ItemBuilder.anItem()
@@ -592,6 +614,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBrieWithQuality55AndSellIn0_whenUpdateQuality_thenQualityRemains55() {
                     var item = ItemBuilder.anItem()
                         .withName(GildedRoseConstants.AGED_BRIE)
@@ -676,6 +699,7 @@ class GildedRoseTest {
                 }
 
                 @Test
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBrieWithQuality55AndSellInNegative_whenUpdateQuality_thenQualityRemains55() {
                     var item = ItemBuilder.anItem()
                         .withName(GildedRoseConstants.AGED_BRIE)
@@ -805,6 +829,7 @@ class GildedRoseTest {
                 }
 
                 @Nested
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 class NegativeQuality {
 
                     final int quality = -9;
@@ -860,6 +885,7 @@ class GildedRoseTest {
 
                 @ParameterizedTest(name = "Backstage pass with quality {0} becomes 0 when the sell in is 0")
                 @ValueSource(ints = {55, 50, 10, 1, 0, -9})
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBackstagePassWithSellIn0_whenUpdateQuality_thenQualityBecomes0(int quality) {
                     var item = ItemBuilder.anItem()
                         .withName(GildedRoseConstants.BACKSTAGE_PASSES)
@@ -875,6 +901,7 @@ class GildedRoseTest {
 
                 @ParameterizedTest(name = "Backstage pass with quality {0} becomes 0 when the sell in is negative")
                 @ValueSource(ints = {55, 50, 10, 1, 0, -9})
+                @SkipWhenStrategyIsDifferentFrom(strategy = ORIGINAL_BEHAVIOUR)
                 void givenBackstagePassWithSellInNegative_whenUpdateQuality_thenQualityBecomes0(int quality) {
                     var item = ItemBuilder.anItem()
                         .withName(GildedRoseConstants.BACKSTAGE_PASSES)

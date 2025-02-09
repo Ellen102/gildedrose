@@ -1,61 +1,44 @@
 package com.gildedrose.core;
 
-import com.gildedrose.core.predicate.IsExactlyPredicate;
-import com.gildedrose.core.predicate.StockItemPredicate;
+import com.gildedrose.core.rule.OrderedRuleEngine;
 
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static com.gildedrose.GildedRoseConstants.*;
+import static com.gildedrose.core.rule.Rule.otherwise;
+import static com.gildedrose.core.rule.Rule.rule;
 
 public class SimpleCalculator implements Calculator {
 
-    private final Stream<Rule> orderedRules;
+    private final OrderedRuleEngine<Integer> qualityCalculationRuleEngine;
 
     public SimpleCalculator() {
-        orderedRules = Stream.of(
-            rule(SULFURAS, SimpleCalculator::calculateSulfurasQuality),
-            rule(AGED_BRIE, SimpleCalculator::calculateAgedBrieQuality),
-            rule(BACKSTAGE_PASSES, SimpleCalculator::calculateBackstagePassesQuality),
-            always(SimpleCalculator::calculateDefaultQuality)
+        //this can be moved to separate calculators and tested indivudally. but i want to wriste a dsl :p
+        qualityCalculationRuleEngine = new OrderedRuleEngine<>(
+            List.of(
+                rule(SULFURAS, SimpleCalculator::calculateSulfurasNextQuality),
+                rule(AGED_BRIE, SimpleCalculator::calculateAgedBrieNextQuality),
+                rule(BACKSTAGE_PASSES, SimpleCalculator::calculateBackstagePassesNextQuality),
+                otherwise(SimpleCalculator::calculateDefaultNextQuality)
+            )
         );
     }
 
     @Override
     public StockItem calculateNext(StockItem stockItem) {
         return stockItem.copy(
-            calculateNextSellIn(stockItem),
+            stockItem.sellInType().next(),
             calculateNextQuality(stockItem)
         );
     }
 
-    record Rule(StockItemPredicate predicate, Function<StockItem, Integer> calculate) {
-        boolean isApplicable(StockItem stockItem) {
-            return predicate.test(stockItem);
-        }
-        Integer calculateNextQuality(StockItem stockItem) {
-            return calculate.apply(stockItem);
-        }
-    }
-
-    private static Rule rule(String name, Function<StockItem, Integer> calculate) {
-        return new Rule(new IsExactlyPredicate(name), calculate);
-    }
-
-    private static Rule always(Function<StockItem, Integer> calculate) {
-        return new Rule(StockItemPredicate.ALWAYS_TRUE, calculate);
-    }
-
 
     private int calculateNextQuality(StockItem item) {
-        return orderedRules
-            .filter(it -> it.isApplicable(item))
-            .findFirst()
-            .orElseThrow()
-            .calculateNextQuality(item);
+        return qualityCalculationRuleEngine.retrieveFirstMatchingRule(item.asStockName())
+            .apply(item.asStockProperties());
     }
 
-    private static int calculateDefaultQuality(StockItem item) {
+    private static int calculateDefaultNextQuality(StockProperties item) {
         if (item.sellIn() > 0) {
             return decreasedItemQualityWithMin0(item, 1);
         } else {
@@ -63,7 +46,7 @@ public class SimpleCalculator implements Calculator {
         }
     }
 
-    private static int calculateBackstagePassesQuality(StockItem item) {
+    private static int calculateBackstagePassesNextQuality(StockProperties item) {
         if (item.sellIn() >= 11) {
             return increasedItemQualityWithMax50(item, 1);
         } else if (6 <= item.sellIn()) {
@@ -75,7 +58,7 @@ public class SimpleCalculator implements Calculator {
         }
     }
 
-    private static int calculateAgedBrieQuality(StockItem item) {
+    private static int calculateAgedBrieNextQuality(StockProperties item) {
         if (item.sellIn() > 0) {
             return increasedItemQualityWithMax50(item, 1);
         } else {
@@ -83,33 +66,26 @@ public class SimpleCalculator implements Calculator {
         }
     }
 
-    private static int calculateSulfurasQuality(StockItem item) {
+    private static int calculateSulfurasNextQuality(StockProperties item) {
         return item.quality();
     }
 
-    private static int decreasedItemQualityWithMin0(StockItem item, int decrement) {
-        if (item.quality() < 0) {
+    private static int decreasedItemQualityWithMin0(StockProperties item, int decrement) {
+        if (item.quality() < MIN_QUALITY) {
             //keep same behavior
             return item.quality();
         } else {
-            return Math.max(0, item.quality() - decrement);
+            return Math.max(MIN_QUALITY, item.quality() - decrement);
         }
     }
 
-    private static int increasedItemQualityWithMax50(StockItem item, int increment) {
-        if (item.quality() > 50) {
+    private static int increasedItemQualityWithMax50(StockProperties item, int increment) {
+        if (item.quality() > MAX_QUALITY) {
             //keep same behavior
             return item.quality();
         } else {
-            return Math.min(50, item.quality() + increment);
+            return Math.min(MAX_QUALITY, item.quality() + increment);
         }
     }
 
-    private static int calculateNextSellIn(StockItem item) {
-        if (SULFURAS.equals(item.name())) {
-            return item.sellIn();
-        } else {
-            return item.sellIn() - 1;
-        }
-    }
 }

@@ -15,7 +15,7 @@ public class ItemBuilder {
         return new ItemBuilder("foo",1,1);
     }
     public static ItemBuilder anSulfurasItem(){
-        return new ItemBuilder(SULFURAS,-1, SULFURAS_QUALITY);
+        return new ItemBuilder(SULFURAS,0, SULFURAS_QUALITY);
     }
 
     public ItemBuilder withName(String name){

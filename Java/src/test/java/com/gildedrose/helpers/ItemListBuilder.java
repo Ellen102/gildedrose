@@ -22,5 +22,9 @@ public class ItemListBuilder {
         items.add(new ItemBuilder(name, 1, 1));
         return this;
     }
+    public ItemListBuilder withItemBuilder(ItemBuilder itemBuilder) {
+        items.add(itemBuilder);
+        return this;
+    }
 
 }
