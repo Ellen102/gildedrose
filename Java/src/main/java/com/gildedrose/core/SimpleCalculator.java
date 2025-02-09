@@ -13,7 +13,6 @@ public class SimpleCalculator implements Calculator {
     private final OrderedRuleEngine qualityCalculationRuleEngine;
 
     public SimpleCalculator() {
-        //this can be moved to separate calculators and tested indivudally. but i want to wriste a dsl :p
         qualityCalculationRuleEngine = new OrderedRuleEngine(
             List.of(
                 rule(SULFURAS, SimpleCalculator::calculateSulfurasNextQuality),
@@ -72,7 +71,7 @@ public class SimpleCalculator implements Calculator {
 
     private static int decreasedItemQualityWithMin0(StockProperties item, int decrement) {
         if (item.quality() < MIN_QUALITY) {
-            //keep same behavior
+            //keep original behavior
             return item.quality();
         } else {
             return Math.max(MIN_QUALITY, item.quality() - decrement);
@@ -81,7 +80,7 @@ public class SimpleCalculator implements Calculator {
 
     private static int increasedItemQualityWithMax50(StockProperties item, int increment) {
         if (item.quality() > MAX_QUALITY) {
-            //keep same behavior
+            //keep original behavior
             return item.quality();
         } else {
             return Math.min(MAX_QUALITY, item.quality() + increment);
