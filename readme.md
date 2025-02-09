@@ -72,61 +72,76 @@ The behavior for *weird* or *invalid* cases is not explicitly mentioned in the r
 make any goblins angry, tests have been added to document that behavior **remains unchanged**. Sometimes, users rely on
 these odd behaviors, and we should verify that no one is exploiting them before making changes.
 
+### Important Refactoring Steps
+
+- Use `foreach`; `item` is much more readable than `item[i]`.
+- Introduce helper function to encapsulate logic.
+- Introduce **static constants** for item names. When you click on them Intelij highlights the usages.
+- Move changes to `sellIn` to a separate function.
+- Split and invert `if` statements using IntelliJ's refactoring tools.
+- Group all statements related to a specific item:
+
+  ```java
+  switch(item.name){
+      case SULFURAS -> ...
+      case AGED_BRIE -> ...
+      case BACKSTAGE_PASSES -> ...
+      default -> ...    
+  }
+  ```
+- Write a **single update action per item name**.
+- Return the quality instead of modifying it directly.
+- Use only the **necessary arguments** in functions (pass item properties instead of the entire item).
+- Use **lambdas/calculators** to transform the `switch` into a list/map/rule engine structure, making testing
+  independent of item names.
+- Utilize **predicates** to allow for future naming changes.
+- Create a **specific rule engine** to manage item rules.
+- Prefer **immutability** wherever possible.
+
+### Steps to Add a Conjured Item After Refactoring
+
+- Add a **Quality Calculator** & test it.
+- Add a rule to the **rule engine**.
+- Check if the rule is **returned by the engine**.
+
+## Overthinking
 
 
--------
-### Notes
+#### Anti-Corruption Layer & Deep Copy of the Items
 
-- items are stored without a deep copy, meaning they can be changed by the caller inbetween multiple calls of
-  `updateQuality` method.
-    - Required action: Talk to the goblin to verify he is (ab)using this, if so why.
-    - Can we change the `updateQuality` method to return something?
-    - Can we add a getter?
-- Notes about existing code
-    - Do not hard code item names.
-        - Know for sure they are exactly the same
-        - Easier to find occurrences
-    - There are currently 4 type of items, currently defined by the *exact* spelling of the name.
-        - AGED_BRIE
-        - BACKSTAGE_PASSES -> more specific than in exercise specs, does not work for other backstage passes: discuss
-          with Goblin
-        - SULFURAS -> the naming in the code does not match the exercise specs, discuss with Goblin
-        - Default item
-        - I am using the short names for now, to make it easier to understand the existing code.
-    - Update quality also updates sellIn
-        - sellIn decreases by 1
-            - except for Sulfuras, in the existing code it does not change.
-            - The existing test contains value 0 and -1
-            - Based on the requirements I would say it does not exists for this item.
-            - Discuss with the Goblin if the value is used, and how/why.
-        - Sellin is updated in the middle of the method
-            - when sell in is originally 0 or less it triggers the second part of the code
-- quality depends on sell in and the update behavior changes when sellin becomes 0
-  - 
-- AGED BRIE: `actually increases in `Quality` the older it gets` -> not very specific
-    - it is implements as 0 or negative sell in -> +2 ; positive just +1
-- first analyse default flow (unamed products), then sulfuras, then brie, backage passes (in order of complexity)
-    - only refactorusing intelij: invert ifs, split if -> makes it easier to understand + easier to understand coverage
-      report :)
-    - try to remove sellin update from the middle
-    - merge logic per producttype
-    - use min,max instead of if(..<max)increase, but we need to keep the same behavoir with invalid params to not make
-      goblin Mad
-    - merge sequantialy updates into 1
-    - always place it in positive sellin, negative order
-    - return instead of update
+The items can be changed externally—either between `updateQuality` calls or even during execution. To avoid being blamed
+for malfunctions, we will create **deep copies** of the items and use our own custom class. Once our calculations are
+done, we will map the results back.
 
-## Overthinking...
+This also serves as an **anti-corruption layer** against incorrect or confusing input. For instance, we can implement
+our own way of handling `sellIn` updates depending on the provided value.
 
-## step 1: Deep copy of items
+#### Validator
 
-The items list can be changed externally by the creator of the list.
-Ideally we would take an argument to the '"update"quality" method, and return a new result
-As this is not possible we can introduce an anticorruption layer
+In the original code, an item with a `quality` of 55 was **not** updated, whereas an item with a `quality` of 49 could
+be updated to a maximum of 50.
 
-### Step 2: The weird behavoir for negative quality and to high qualities
+Since we are **terrified** of the goblin and want to figure out whether this behavior has been abused, we will first
+introduce a **validator** that logs any invalid quality values. This allows us to detect if someone has been exploiting
+the system.
 
-- do not modify values inside
-- use immutability
-- handle anticorruption behavoir
+If nothing suspicious turns up after some time in production, we can transition to throwing errors for invalid
+qualities. Let’s hope that doesn’t happen, because... **scary goblin**.
+
+Normally, we’d just throw an error from the start, but given our deep-seated fear of goblins, we’ll proceed cautiously.
+Once we confirm that there are no unintended side effects, we can refine our approach and clean up the edge case
+handling.
+
+Because the only thing worse than angry goblins… is **angry goblins with a support ticket.**
+
+
+### Conditionally disable test based on a feature flag
+Just wanted to try this for fun. 
+
+
+### Predicate
+Predicate for 'Backstage passes' can be changed to something like `ContainsInLowerCase`.
+
+### dsl
+I just wanted to write a dsl because they are fun to write and easy to read. This way our intern can easily configure new items.
 
