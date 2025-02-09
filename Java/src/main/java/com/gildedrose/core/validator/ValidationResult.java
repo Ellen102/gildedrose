@@ -8,6 +8,7 @@ public sealed interface ValidationResult {
     List<String> errors();
 
     ValidationResult and(ValidationResult validationResult);
+
     boolean hasErrors();
 
     void throwOnError();
@@ -18,10 +19,6 @@ public sealed interface ValidationResult {
     }
 
     Success SUCCESS = new Success();
-
-    static Success success() {
-        return ValidationResult.SUCCESS;
-    }
 
     ///  implementation
 
@@ -53,10 +50,6 @@ public sealed interface ValidationResult {
     final class Failure implements ValidationResult {
 
         public final List<String> errors;
-
-        public Failure() {
-            errors = List.of();
-        }
 
         public Failure(List<String> list) {
             errors = List.copyOf(list);

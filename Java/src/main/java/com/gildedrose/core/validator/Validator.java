@@ -1,9 +1,6 @@
 package com.gildedrose.core.validator;
 
-import com.gildedrose.Item;
 import com.gildedrose.core.StockItem;
-import com.gildedrose.core.predicate.StockNamePredicate;
-import com.gildedrose.core.valueobjects.StockName;
 
 import java.util.function.Function;
 

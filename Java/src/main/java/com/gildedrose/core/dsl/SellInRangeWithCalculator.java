@@ -2,7 +2,7 @@ package com.gildedrose.core.dsl;
 
 import com.gildedrose.core.QualityCalculator;
 
-public record SellInRangePair(
+public record SellInRangeWithCalculator(
     Range range,
     QualityCalculator calculator
 ) {

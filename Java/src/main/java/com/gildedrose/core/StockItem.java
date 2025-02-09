@@ -1,7 +1,8 @@
 package com.gildedrose.core;
 
-import com.gildedrose.core.valueobjects.SellInType;
-import com.gildedrose.core.valueobjects.StockName;
+import com.gildedrose.core.sellin.DailyDecreasingSellIn;
+import com.gildedrose.core.sellin.SellInType;
+import com.gildedrose.core.sellin.StableSellIn;
 
 public record StockItem(
     String name,
@@ -13,18 +14,10 @@ public record StockItem(
         return new StockItem(name, nextSellIn, nextQuality);
     }
 
-    public StockItem withQuality(int quality) {
-        return new StockItem(name, sellInType, quality);
-    }
-
-    public StockItem withSellIn(SellInType sellIn) {
-        return new StockItem(name, sellIn, quality);
-    }
-
     public int sellIn() {
         return switch (sellInType) {
-            case SellInType.DailyDecreasingSellIn dailyDecreasingSellIn -> dailyDecreasingSellIn.value();
-            case SellInType.StableSellIn stableSellIn -> throw new IllegalStateException("Should not request sellIn for " + name);
+            case DailyDecreasingSellIn dailyDecreasingSellIn -> dailyDecreasingSellIn.value();
+            case StableSellIn stableSellIn -> throw new IllegalStateException("Should not request sellIn for " + name);
         };
     }
 

@@ -1,12 +1,10 @@
 package com.gildedrose.core.rule;
 
 import com.gildedrose.core.QualityCalculator;
+import com.gildedrose.core.StockName;
 import com.gildedrose.core.StockProperties;
-import com.gildedrose.core.predicate.IsExactlyStockNamePredicate;
 import com.gildedrose.core.predicate.StockNamePredicate;
-import com.gildedrose.core.valueobjects.StockName;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public record Rule(Predicate<StockName> predicate, QualityCalculator calculator) {
@@ -16,8 +14,9 @@ public record Rule(Predicate<StockName> predicate, QualityCalculator calculator)
     }
 
     //public methods
-    public static Rule rule(String name, QualityCalculator calculate) {
-        return new Rule(new IsExactlyStockNamePredicate(name), calculate);
+
+    public static Rule rule(Predicate<StockName> predicate, QualityCalculator calculate) {
+        return new Rule(predicate, calculate);
     }
 
     public static Rule otherwise(QualityCalculator calculate) {

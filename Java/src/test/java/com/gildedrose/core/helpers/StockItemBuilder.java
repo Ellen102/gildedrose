@@ -1,7 +1,7 @@
 package com.gildedrose.core.helpers;
 
 import com.gildedrose.core.StockItem;
-import com.gildedrose.core.valueobjects.SellInType;
+import com.gildedrose.core.sellin.SellInType;
 
 import static com.gildedrose.GildedRoseConstants.SULFURAS;
 import static com.gildedrose.GildedRoseConstants.SULFURAS_QUALITY;

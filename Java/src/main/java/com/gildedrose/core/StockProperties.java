@@ -1,6 +1,6 @@
 package com.gildedrose.core;
 
-import com.gildedrose.core.valueobjects.SellInType;
+import com.gildedrose.core.sellin.SellInType;
 
 public record StockProperties(
     SellInType sellInType,

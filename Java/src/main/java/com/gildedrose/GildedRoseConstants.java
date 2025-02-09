@@ -1,7 +1,6 @@
 package com.gildedrose;
 
 
-import static com.gildedrose.FeatureFlags.CalculationStrategy.FAIL_ON_EXCEPTIONS_BEHAVIOUR;
 import static com.gildedrose.FeatureFlags.CalculationStrategy.ORIGINAL_BEHAVIOUR;
 
 public class GildedRoseConstants {
@@ -12,8 +11,8 @@ public class GildedRoseConstants {
     public static final int MAX_QUALITY = 50;
     public static final int MIN_QUALITY = 0;
     public static final FeatureFlags FEATURE_FLAGS = new FeatureFlags(
-        FAIL_ON_EXCEPTIONS_BEHAVIOUR
-//        ORIGINAL_BEHAVIOUR
+//        FAIL_ON_EXCEPTIONS_BEHAVIOUR
+        ORIGINAL_BEHAVIOUR
     );
 
 }

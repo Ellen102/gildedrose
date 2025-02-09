@@ -1,6 +1,7 @@
 package com.gildedrose.core.predicate;
 
-import com.gildedrose.core.valueobjects.StockName;
+
+import com.gildedrose.core.StockName;
 
 import java.util.function.Predicate;
 

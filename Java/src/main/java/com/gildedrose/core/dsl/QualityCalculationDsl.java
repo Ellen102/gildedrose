@@ -7,7 +7,7 @@ import com.gildedrose.core.rule.OrderedRuleEngine;
 import com.gildedrose.core.rule.Rule;
 import com.gildedrose.core.rule.RuleEngine;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class QualityCalculationDsl {
     private QualityCalculationDsl() {
@@ -16,7 +16,7 @@ public class QualityCalculationDsl {
 
     // Rule creation
     public static RuleEngine orderedRules(Rule... rules) {
-        return new OrderedRuleEngine(Arrays.stream(rules).toList());
+        return new OrderedRuleEngine(List.of(rules));
     }
 
     public record RuleToCalculate(StockNamePredicate predicate) {
@@ -54,8 +54,8 @@ public class QualityCalculationDsl {
     public record SellInRange(
         Range range
     ) {
-        public SellInRangePair then(QualityCalculator calculator) {
-            return new SellInRangePair(range, calculator);
+        public SellInRangeWithCalculator then(QualityCalculator calculator) {
+            return new SellInRangeWithCalculator(range, calculator);
         }
     }
 
@@ -63,7 +63,7 @@ public class QualityCalculationDsl {
         return new SellInRange(range);
     }
 
-    public static QualityCalculator whenSellIn(SellInRangePair... pairs) {
-        return new BasedOnSellIn(Arrays.asList(pairs));
+    public static QualityCalculator whenSellIn(SellInRangeWithCalculator... pairs) {
+        return new BasedOnSellIn(List.of(pairs));
     }
 }

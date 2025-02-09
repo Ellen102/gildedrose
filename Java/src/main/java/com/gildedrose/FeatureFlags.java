@@ -27,7 +27,6 @@ public record FeatureFlags(
         return switch (calculationStrategy) {
             case ORIGINAL_BEHAVIOUR -> new ValidatingCalculator(new SimpleCalculator(), false);
             case FAIL_ON_EXCEPTIONS_BEHAVIOUR -> new ValidatingCalculator(new DslCalculator(), true);
-            default -> throw new IllegalStateException("Unknown calculation strategy: " + calculationStrategy);
         };
     }
 }

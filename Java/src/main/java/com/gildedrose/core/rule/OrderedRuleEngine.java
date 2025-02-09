@@ -1,15 +1,18 @@
 package com.gildedrose.core.rule;
 
-import com.gildedrose.core.valueobjects.StockName;
+
+import com.gildedrose.core.StockName;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-public class OrderedRuleEngine implements RuleEngine{
+public class OrderedRuleEngine implements RuleEngine {
 
     protected final Collection<Rule> orderedRules;
 
-    public OrderedRuleEngine(Collection<Rule> orderedRules) {
-        this.orderedRules = orderedRules;
+    public OrderedRuleEngine(List<Rule> orderedRules) {
+        this.orderedRules = Collections.unmodifiableList(orderedRules);
     }
 
     @Override
@@ -17,9 +20,6 @@ public class OrderedRuleEngine implements RuleEngine{
         return orderedRules.stream()
             .filter(it -> it.predicate().test(stockName))
             .findFirst()
-            .orElseThrow(()-> new IllegalStateException("No rule found for " + stockName));
+            .orElseThrow(() -> new IllegalStateException("No rule found for " + stockName));
     }
-
-
-
 }

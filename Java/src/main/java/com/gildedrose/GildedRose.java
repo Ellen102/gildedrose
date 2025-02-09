@@ -2,7 +2,9 @@ package com.gildedrose;
 
 import com.gildedrose.core.Calculator;
 import com.gildedrose.core.StockItem;
-import com.gildedrose.core.valueobjects.SellInType;
+import com.gildedrose.core.sellin.DailyDecreasingSellIn;
+import com.gildedrose.core.sellin.SellInType;
+import com.gildedrose.core.sellin.StableSellIn;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,20 +42,16 @@ class GildedRose {
             return new AntiCorruptionItem(item, antiCorruptionItem);
         }
 
-        public AntiCorruptionItem with(StockItem stockItem) {
-            return new AntiCorruptionItem(item, stockItem);
-        }
-
         public void applyChanges() {
             item.quality = stockItem.quality();
             item.sellIn = switch (stockItem.sellInType()) {
-                case SellInType.DailyDecreasingSellIn dailyDecreasingSellIn -> dailyDecreasingSellIn.value();
-                case SellInType.StableSellIn stableSellIn -> item.sellIn;
+                case DailyDecreasingSellIn dailyDecreasingSellIn -> dailyDecreasingSellIn.value();
+                case StableSellIn stableSellIn -> item.sellIn;
             };
         }
 
         public AntiCorruptionItem calculateNext() {
-            return with(calculator.calculateNext(stockItem));
+            return new AntiCorruptionItem(item, calculator.calculateNext(stockItem));
         }
     }
 
