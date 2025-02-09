@@ -1,6 +1,5 @@
 package com.gildedrose.core.rule;
 
-import com.gildedrose.core.QualityCalculator;
 import com.gildedrose.core.StockName;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +13,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderedRuleEngineTest {
 
-    QualityCalculator qualityCalculator1 = stockProperties -> 1;
-    QualityCalculator qualityCalculator2 = stockProperties -> 2;
-    QualityCalculator qualityCalculator3 = stockProperties -> 3;
-
     private static OrderedRuleEngine createOrderedRuleEngine(Rule... rules) {
         return new OrderedRuleEngine(
             List.of(
@@ -26,9 +21,9 @@ class OrderedRuleEngineTest {
         );
     }
 
-    private final Rule rule1 = rule(isExactly("1"), qualityCalculator1);
-    private final Rule rule2 = rule(isExactly("2"), qualityCalculator2);
-    private final Rule alwaysTrueRule = rule(ALWAYS_TRUE, qualityCalculator3);
+    private final Rule rule1 = rule(isExactly("1"), stockProperties -> 1);
+    private final Rule rule2 = rule(isExactly("2"), stockProperties -> 2);
+    private final Rule alwaysTrueRule = rule(ALWAYS_TRUE, stockProperties -> 3);
 
 
     @Test
