@@ -121,7 +121,7 @@ our own way of handling `sellIn` updates depending on the provided value.
 #### Validator
 
 In the original code, an item with a `quality` of 55 was **not** updated, whereas an item with a `quality` of 49 could
-be updated to a maximum of 50.
+be updated to a maximum of 50. Sulfuras keeps the orignal quality instead of setting it to 80.
 
 Since we are **terrified** of the goblin and want to figure out whether this behavior has been abused, we will first
 introduce a **validator** that logs any invalid quality values. This allows us to detect if someone has been exploiting
