@@ -5,7 +5,7 @@ import com.gildedrose.core.StockProperties;
 
 import static com.gildedrose.GildedRoseConstants.MAX_QUALITY;
 
-public class BackstagePassRangedQualityCalculator implements QualityCalculator {
+public final class BackstagePassRangedQualityCalculator implements QualityCalculator {
     @Override
     public Integer calculateQuality(StockProperties stockProperties) {
         if (stockProperties.sellIn() >= 11) {

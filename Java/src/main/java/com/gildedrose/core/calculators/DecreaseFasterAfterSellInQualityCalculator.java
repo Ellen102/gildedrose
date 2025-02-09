@@ -5,7 +5,7 @@ import com.gildedrose.core.StockProperties;
 
 import static com.gildedrose.GildedRoseConstants.MIN_QUALITY;
 
-public class DecreaseFasterAfterSellInQualityCalculator implements QualityCalculator {
+public final class DecreaseFasterAfterSellInQualityCalculator implements QualityCalculator {
     @Override
     public Integer calculateQuality(StockProperties stockProperties) {
         if (stockProperties.sellIn() > 0) {
