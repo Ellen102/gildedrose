@@ -106,7 +106,6 @@ these odd behaviors, and we should verify that no one is exploiting them before 
 
 ## Overthinking
 
-
 #### Anti-Corruption Layer & Deep Copy of the Items
 
 The items can be changed externally—either between `updateQuality` calls or even during execution. To avoid being blamed
@@ -134,14 +133,16 @@ handling.
 
 Because the only thing worse than angry goblins… is **angry goblins with a support ticket.**
 
-
 ### Conditionally disable test based on a feature flag
-Just wanted to try this for fun. 
 
+Just wanted to try this for fun.
 
 ### Predicate
-Predicate for 'Backstage passes' can be changed to something like `ContainsInLowerCase`.
+
+Predicate for 'Backstage passes' can be changed to something like `ContainsInLowerCase`. (TODO)
 
 ### dsl
-I just wanted to write a dsl because they are fun to write and easy to read. This way our intern can easily configure new items.
 
+I just wanted to write a dsl because they are fun to write and easy to read. This way our intern can easily configure
+new items.
+(dsl is not tested, still in design phase)
