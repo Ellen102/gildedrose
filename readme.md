@@ -100,6 +100,10 @@ these odd behaviors, and we should verify that no one is exploiting them before 
 - Name of calculator classes
   - As the calculator is not really specific anymore for the item name, they should explain what they are doing, this is very long though
   - (TODO: improve names)
+- Where to place to 0 to 50 clamping 
+  - As the legacy behavior is a bit weird, I kept it inside the `Quality Calculator`, in time I would move it a separate calculator and wrap the existing calculator.
+- Should we return the quality or the increment
+  - Quality is easier to reason about
 
 ### Steps to Add a Conjured Item After Refactoring
 - Ideally we would like more explenation or decent examples of what `twice as fast` means
